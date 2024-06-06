@@ -123,12 +123,13 @@ class QuizGenerator:
         """
         self.question_bank = [] # Reset the question bank
 
-        for _ in range(self.num_questions):
+        while len(self.question_bank) < self.num_questions:
             ##### YOUR CODE HERE #####
-            question_str = # Use class method to generate question
+            question_str =self.generate_question_with_vectorstore() # Use class method to generate question
             
             ##### YOUR CODE HERE #####
             try:
+                question = json.loads(question_str)
                 # Convert the JSON String to a dictionary
             except json.JSONDecodeError:
                 print("Failed to decode question JSON.")
@@ -140,6 +141,7 @@ class QuizGenerator:
             if self.validate_question(question):
                 print("Successfully generated unique question")
                 # Add the valid and unique question to the bank
+                self.question_bank.append(question)
             else:
                 print("Duplicate or invalid question detected.")
             ##### YOUR CODE HERE #####
@@ -170,6 +172,13 @@ class QuizGenerator:
         # Consider missing 'question' key as invalid in the dict object
         # Check if a question with the same text already exists in the self.question_bank
         ##### YOUR CODE HERE #####
+        if "question" in question.keys():
+            if question["question"] not in self.question_bank:
+                is_unique = True
+            else:
+                is_unique = False
+        else:
+            is_unique = False
         return is_unique
 
 
@@ -178,7 +187,7 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR-PROJECT-ID-HERE",
+        "project": "mission-quizzify-423614",
         "location": "us-central1"
     }
     
